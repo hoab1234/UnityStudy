@@ -355,12 +355,13 @@
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/UnityEngine.UI.ref.dll"
 "Assets/Scripts/Manager.cs"
-"Assets/Scripts/Study/AwakeAndStart/AwakeExample.cs"
-"Assets/Scripts/Study/AwakeAndStart/OtherAwakeExample.cs"
-"Assets/Scripts/Study/AwakeAndStart/StartExample.cs"
-"Assets/Scripts/Study/UnityWebRequest1/ImageLoader.cs"
-"Assets/Scripts/Study/UnityWebRequest1/ImageMotivateManager.cs"
-"Assets/Scripts/Study/UnityWebRequest1/ImageObject.cs"
+"Assets/Study/AwakeAndStart/AwakeExample.cs"
+"Assets/Study/AwakeAndStart/OtherAwakeExample.cs"
+"Assets/Study/AwakeAndStart/StartExample.cs"
+"Assets/Study/UnityWebRequest1/Scripts/ImageGenerator.cs"
+"Assets/Study/UnityWebRequest1/Scripts/ImageGroupMotivator.cs"
+"Assets/Study/UnityWebRequest1/Scripts/ImageLoader.cs"
+"Assets/Study/UnityWebRequest1/Scripts/ImageObject.cs"
 -langversion:9.0
 
 /deterministic

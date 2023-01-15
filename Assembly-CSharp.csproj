@@ -56,13 +56,14 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Study\UnityWebRequest1\Scripts\ImageGenerator.cs" />
     <Compile Include="Assets\Scripts\Manager.cs" />
-    <Compile Include="Assets\Scripts\Study\AwakeAndStart\StartExample.cs" />
-    <Compile Include="Assets\Scripts\Study\UnityWebRequest1\ImageObject.cs" />
-    <Compile Include="Assets\Scripts\Study\UnityWebRequest1\ImageLoader.cs" />
-    <Compile Include="Assets\Scripts\Study\UnityWebRequest1\ImageMotivateManager.cs" />
-    <Compile Include="Assets\Scripts\Study\AwakeAndStart\AwakeExample.cs" />
-    <Compile Include="Assets\Scripts\Study\AwakeAndStart\OtherAwakeExample.cs" />
+    <Compile Include="Assets\Study\AwakeAndStart\StartExample.cs" />
+    <Compile Include="Assets\Study\UnityWebRequest1\Scripts\ImageObject.cs" />
+    <Compile Include="Assets\Study\UnityWebRequest1\Scripts\ImageLoader.cs" />
+    <Compile Include="Assets\Study\UnityWebRequest1\Scripts\ImageGroupMotivator.cs" />
+    <Compile Include="Assets\Study\AwakeAndStart\AwakeExample.cs" />
+    <Compile Include="Assets\Study\AwakeAndStart\OtherAwakeExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
