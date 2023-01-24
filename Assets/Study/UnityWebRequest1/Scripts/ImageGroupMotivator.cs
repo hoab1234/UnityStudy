@@ -5,10 +5,9 @@ using UnityEngine;
 public class ImageGroupMotivator : MonoBehaviour
 {
     private int motivateTerm = 1;
-    private float rotationTerm = 5f;
+    private float term = 3f;
     private float startRotation;
     private float endRotation;
-    private float time;
 
     private float moveDistance = 4f;
     private Vector3 basePosition;
@@ -22,60 +21,76 @@ public class ImageGroupMotivator : MonoBehaviour
     {
         yield return new WaitForSeconds(motivateTerm);
 
+        endRotation = startRotation + 360.0f;
+        startRotation = transform.localEulerAngles.y;
+
+        basePosition = transform.localPosition;
+        startPositionZ = basePosition.z;
+        endPositionZ = startPositionZ + moveDistance / 2;
+
         StartCoroutine(CustomRotateImageGrouop());
+        StartCoroutine(CustomMoveImageGrouop());
     }
-    
+
     IEnumerator CustomRotateImageGrouop()
     {
         while (true)
         {
-            endRotation = startRotation + 360.0f;
-            startRotation = transform.localEulerAngles.y;
-            time = 0.0f;
+            float time = 0.0f;
 
-            basePosition = transform.localPosition;
-            startPositionZ = basePosition.z;
-            endPositionZ = startPositionZ + moveDistance;
-
-            while (time < rotationTerm)
+            while (time < term)
             {
                 //rotate 360 degree
                 float yRotation = Mathf.Lerp(startRotation, endRotation, time / duration) % 360.0f;
-                transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, yRotation, transform.localEulerAngles.z);
+                //transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, yRotation, transform.localEulerAngles.z);
 
-                //Mover();
                 time += Time.deltaTime;
                 yield return null;
             }
 
-            yield return rotationTerm;
+            yield return term;
         }
     }
 
-    private void Mover()
+    IEnumerator CustomMoveImageGrouop()
     {
-        if (movingRight)
+        while (true)
         {
-            float z = Mathf.Lerp(startPositionZ, endPositionZ, time / (duration / 2)) % moveDistance;
-            transform.localPosition = new Vector3(basePosition.x, basePosition.y, z); 
-            if (transform.localPosition.z >= 1f)
+            float time = 0;
+
+            while (time < term)
             {
-                movingRight = false;
-                Debug.Log(movingRight);
-            }
-        }
-        else
-        {
-            float z = Mathf.Lerp(endPositionZ, startPositionZ, time / (duration  / 2)) % moveDistance;
-            transform.localPosition = new Vector3(basePosition.x, basePosition.y, z);
-            if (transform.localPosition.z <= 0f)
-            {
-                movingRight = true;
-                Debug.Log(movingRight);
+                float z = Mathf.Sin(time);
+                Debug.Log(z);
+                transform.localPosition = new Vector3(basePosition.x, basePosition.y, z);
+                time += Time.deltaTime;
+                yield return null;
             }
         }
     }
-
-    //called when awake function
-    private void SetImageGroupMotivateStartTerm(int term) => motivateTerm = term;
 }
+
+/*
+private void Mover()
+{
+    if (movingRight)
+    {
+        float z = Mathf.Lerp(startPositionZ, endPositionZ, time / (duration / 2)) % moveDistance;
+        transform.localPosition = new Vector3(basePosition.x, basePosition.y, z);
+        if (transform.localPosition.z >= 1f)
+        {
+            movingRight = false;
+            Debug.Log(movingRight);
+        }
+    }
+    else
+    {
+        float z = Mathf.Lerp(endPositionZ, startPositionZ, time / (duration / 2)) % moveDistance;
+        transform.localPosition = new Vector3(basePosition.x, basePosition.y, z);
+        if (transform.localPosition.z <= 0f)
+        {
+            movingRight = true;
+            Debug.Log(movingRight);
+        }
+    }*/
+    
