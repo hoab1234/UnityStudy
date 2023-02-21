@@ -8,6 +8,7 @@ public class ImageGenerator : MonoBehaviour
 {
     [SerializeField] private List<Transform> generatePointTransList;
     [SerializeField] private GameObject imagePrefab;
+    [SerializeField] private ImageLoader imageLoader;
 
     [Space(20)]
     [Header("Customize Image Property")]
@@ -22,25 +23,6 @@ public class ImageGenerator : MonoBehaviour
     private void Awake()
     {
         waitForGenerate = new WaitForSeconds(generateTermTime);
-        DebugPageText();
-    }
-
-    void DebugPageText()
-    {
-        StartCoroutine(GetRequest("https://search.naver.com/search.naver?where=image&sm=tab_jum&query=dog"));
-    }
-
-    IEnumerator GetRequest(string url)
-    {
-        UnityWebRequest request = UnityWebRequest.Get(url);
-
-        yield return request.SendWebRequest();
-
-        if (request.isNetworkError) Debug.Log("error");
-        else
-        {
-            Debug.Log(request.downloadHandler.text);
-        }
     }
 
     IEnumerator Start()

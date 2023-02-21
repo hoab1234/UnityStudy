@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
-using System.Text.RegularExpressions;
+using System.IO;
 
 public class ImageLoader : MonoBehaviour
 {
@@ -20,38 +20,26 @@ public class ImageLoader : MonoBehaviour
         searchInputField.onSubmit.AddListener(ImageLoad);
     }
 
-    private void ImageLoad(string keyword) => StartCoroutine(GetImageResources(keyword));
-
-    IEnumerator GetImageResources(string keyword)
+    private void ImageLoad(string keyword)
     {
-        string url = baseUrl + keyword + "&tbm=isch";
-        //string url = "https://www.google.com/search?q=" + keyword + "&source=lnms&tbm=isch";
+        //StartCoroutine(GetRequest(baseUrl + searchInputField.text));
+        StartCoroutine(GetRequest("https://search.naver.com/search.naver?where=image&sm=tab_jum&query=dog"));
+    }
 
-        UnityWebRequest www = UnityWebRequest.Get(url);
+    IEnumerator GetRequest(string url)
+    {
+        string test = "https%3A%2F%2Fsearch.pstatic.net%2Fsunny%2F%3Fsrc%3Dhttps%253A%252F%252Fi.pinimg.com%252F736x%252Fbe%252F9a%252F53%252Fbe9a53cff7c5ef838562f5811f343ee5.jpg%26type%3Dsc960_832";
+        Debug.Log(UnityWebRequest.UnEscapeURL(test));
+        UnityWebRequest request = UnityWebRequest.Get(url);
 
-        yield return www.SendWebRequest();
+        yield return request.SendWebRequest();
 
-        if (www.result == UnityWebRequest.Result.ConnectionError)
-        {
-            Debug.Log(www.error);
-        }
+        if (request.isNetworkError) Debug.Log("error");
         else
         {
-            string result = www.downloadHandler.text;
-            
-            UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(UnityWebRequest.EscapeURL("https://search.naver.com/search.naver?sm=tab_hty.top&where=image&query=%EA%B0%9C&oquery=%EA%B0%9C.png&tqi=h8MMJsp0YidssuBlOo8ssssss3h-193639#imgId=image_sas%3Ablog157277402%7C6%7C222950714377_340112946"));
-            yield return imageRequest.SendWebRequest();
-
-            //Texture2D imageTexture = ((DownloadHandlerTexture)imageRequest.downloadHandler).texture;
-            SetTexture(DownloadHandlerTexture.GetContent(www));
-            // Assign the texture to the RawImage component
-        } 
+            Debug.Log(request.downloadHandler.text);
+            string result = UnityWebRequest.UnEscapeURL(request.downloadHandler.text);
+            //string compareString = "https://search.pstatic.net/sunny";
+        }
     }
-
-    private void SetTexture(Texture2D texture)
-    {
-        imageList[0].texture = texture;
-    }
-
-
 }
