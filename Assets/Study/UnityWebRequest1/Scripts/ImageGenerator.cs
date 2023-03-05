@@ -12,39 +12,36 @@ public class ImageGenerator : MonoBehaviour
 
     [Space(20)]
     [Header("Customize Image Property")]
-    [SerializeField] private int totalImageCount = 10;
     [SerializeField] private float imageQuadSpeed = 10f;
     [SerializeField] private float generateTermTime = 1f;
-    [SerializeField] private int rotateTerm = 2;
 
     private WaitForSeconds waitForGenerate;
-    private RawImage[] rawImages;
+    private int TotalImageCount = 10;
+    public Texture[] Textures;
+    public List<GameObject> Objects = new List<GameObject>();
 
-    private void Awake()
+    public void Init(Texture[] textures)
     {
+        this.Textures = textures;
+        TotalImageCount = textures.Length;
         waitForGenerate = new WaitForSeconds(generateTermTime);
+
+        StartCoroutine(GenerateImageObjects());
     }
 
-    IEnumerator Start()
+    IEnumerator GenerateImageObjects()
     {
-        // get images from image
-        //rawImages = GetImages();
-
-        for (int i = 0; i < totalImageCount ; i++)
+        
+        for (int i = 0; i < TotalImageCount ; i++)
         {
             GameObject imageQuad = Instantiate(imagePrefab, generatePointTransList[Random.Range(0, generatePointTransList.Count)]);
+            Objects.Add(imageQuad);
             ImageObject imageObject = imageQuad.GetComponent<ImageObject>();
 
-            //imageObject.SetImage(rawImages[i].mainTexture);
+            imageObject.SetImage(Textures[i]);
             imageObject.SetSpeed(imageQuadSpeed);
 
             yield return waitForGenerate;
         }
-    }
-
-    private RawImage[] GetImages()
-    {
-        //get images
-        return new RawImage[totalImageCount];
     }
 }

@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4415c547e4df6d44487ce80525224cbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mesh: {fileID: 3966975578051793296}
+  Mesh: {fileID: 3966975578051793296}
 --- !u!1 &5760844701899388571
 GameObject:
   m_ObjectHideFlags: 0

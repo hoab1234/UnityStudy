@@ -12,7 +12,6 @@ public class ImageObject : MonoBehaviour
 
     private void Awake()
     {
-        Mesh = GetComponent<MeshRenderer>();
         baseTransform = transform.parent;
     }
 
