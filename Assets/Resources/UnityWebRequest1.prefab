@@ -98,9 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   searchInputField: {fileID: 3833049873433065304}
-  imageList:
-  - {fileID: 0}
-  maxImageCount: 5
+  maxImageCount: 10
+  imageGenerator: {fileID: 3833049874319694286}
 --- !u!1 &3833049873043828469
 GameObject:
   m_ObjectHideFlags: 0
@@ -825,10 +824,12 @@ MonoBehaviour:
   - {fileID: 3833049873256778520}
   - {fileID: 3833049873565987777}
   imagePrefab: {fileID: 4337985154852424275, guid: bfb3c2b3e11a74f4ab0b2d9c66af5a10, type: 3}
+  imageLoader: {fileID: 0}
   totalImageCount: 10
   imageQuadSpeed: 1
   generateTermTime: 1
-  rotateTerm: 2
+  Textures: []
+  Objects: []
 --- !u!1 &3833049874571663224
 GameObject:
   m_ObjectHideFlags: 0
