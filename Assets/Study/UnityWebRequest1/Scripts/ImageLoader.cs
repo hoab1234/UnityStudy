@@ -1,40 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
 using TMPro;
-using System.IO;
-using System;
+using UnityEngine;
+using UnityEngine.Networking;
 
 public class ImageLoader : MonoBehaviour
 {
     [SerializeField] private TMP_InputField searchInputField;
     [SerializeField] private int maxImageCount = 10;
     [SerializeField] private ImageGenerator imageGenerator;
+    private Texture[] textures;
 
     // 생성/다운로드 이미지 개수 맞춰야함
 
-    private string baseUrl = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=";
+    private const string BASE_URL = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=";
 
     private void Awake()
     {
-        searchInputField.onSubmit.AddListener(value =>
+        //searchInputField, imageGenerator null check
+
+        searchInputField.onSubmit.AddListener(keyword =>
         {
             ResetPreviousResult();
-            RequestImage(baseUrl + value);
+            StartCoroutine(GetRequest(BASE_URL + keyword));            
         });
     }
 
-    private void RequestImage(string keyword)
+    IEnumerator GetRequest(string urlWithKeyword)
     {
-        StartCoroutine(GetRequest(keyword));
-    }
-
-    IEnumerator GetRequest(string url)
-    {
-
-        UnityWebRequest request = UnityWebRequest.Get(url);
+        UnityWebRequest request = UnityWebRequest.Get(urlWithKeyword);
 
         yield return request.SendWebRequest();
 
@@ -42,24 +36,23 @@ public class ImageLoader : MonoBehaviour
         else
         {
             Debug.Log(request.downloadHandler.text);
-            List<string> textureUrls = ExtractImageUrl(request.downloadHandler.text);
+            List<string> textureUrls = ExtractImageUrlList(request.downloadHandler.text);
             StartCoroutine(DownloadImage(textureUrls));
         }
     }
 
-    private List<string> ExtractImageUrl(string result)
+    private List<string> ExtractImageUrlList(string result)
     {
         List<string> textureUrls = new List<string>();
 
         string excludeKeyword = "\"originalUrl\":\"";
-        int excludeIndex = excludeKeyword.Length;
-
+        
         int imageCount = maxImageCount;
 
         while (imageCount != 0)
         {
-            string data = result.Substring(result.IndexOf(excludeKeyword) + excludeIndex);
-
+            int keywordStartIndex = result.IndexOf(excludeKeyword) + excludeKeyword.Length;
+            string data = result.Substring(keywordStartIndex);
             string url = data.Substring(0, data.IndexOf("\""));
 
             textureUrls.Add(UnityWebRequest.UnEscapeURL(url));
@@ -74,7 +67,7 @@ public class ImageLoader : MonoBehaviour
 
     IEnumerator DownloadImage(List<string> textureUrls)
     {
-        Texture[] textures = new Texture[textureUrls.Count];
+        textures = new Texture[textureUrls.Count];
 
         for (int i = 0; i < textureUrls.Count; i++)
         {
@@ -88,8 +81,7 @@ public class ImageLoader : MonoBehaviour
             }
             else
             {
-                Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
-                textures[i] = texture;
+                textures[i] = DownloadHandlerTexture.GetContent(imageRequest);
             }
         }
 
@@ -97,22 +89,14 @@ public class ImageLoader : MonoBehaviour
     }
 
     private void ResetPreviousResult()
-    {
-        if (imageGenerator != null)
+    {        
+        if (textures != null)
         {
-
-            if (imageGenerator.Objects != null)
+            foreach (var texture in textures)
             {
-                foreach (var obj in imageGenerator.Objects)
-                {
-                    Destroy(obj);
-                }
+                Destroy(texture);
             }
-
-            if (imageGenerator.Textures != null)
-            {
-                imageGenerator.Textures = null;
-            }
+            textures = null;
         }
     }
 }

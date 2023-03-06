@@ -1,47 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
 
 public class ImageGenerator : MonoBehaviour
 {
     [SerializeField] private List<Transform> generatePointTransList;
-    [SerializeField] private GameObject imagePrefab;
-    [SerializeField] private ImageLoader imageLoader;
-
+    [SerializeField] private ImageObject imagePrefab;
+    
     [Space(20)]
     [Header("Customize Image Property")]
-    [SerializeField] private float imageQuadSpeed = 10f;
+    [SerializeField] private float imageMovingSpeed = 10f;
     [SerializeField] private float generateTermTime = 1f;
 
-    private WaitForSeconds waitForGenerate;
-    private int TotalImageCount = 10;
-    public Texture[] Textures;
-    public List<GameObject> Objects = new List<GameObject>();
+    private List<ImageObject> objects = new List<ImageObject>();
 
     public void Init(Texture[] textures)
     {
-        this.Textures = textures;
-        TotalImageCount = textures.Length;
-        waitForGenerate = new WaitForSeconds(generateTermTime);
-
-        StartCoroutine(GenerateImageObjects());
+        ResetPreviousResult();
+        StartCoroutine(GenerateImageObjects(textures));
     }
 
-    IEnumerator GenerateImageObjects()
+    IEnumerator GenerateImageObjects(Texture[] textures)
     {
-        
-        for (int i = 0; i < TotalImageCount ; i++)
+        for (int i = 0; i < textures.Length; i++)
         {
-            GameObject imageQuad = Instantiate(imagePrefab, generatePointTransList[Random.Range(0, generatePointTransList.Count)]);
-            Objects.Add(imageQuad);
-            ImageObject imageObject = imageQuad.GetComponent<ImageObject>();
+            ImageObject imageQuad = Instantiate(imagePrefab, generatePointTransList[Random.Range(0, generatePointTransList.Count)]);
+            objects.Add(imageQuad);
 
-            imageObject.SetImage(Textures[i]);
-            imageObject.SetSpeed(imageQuadSpeed);
+            imageQuad.Init(textures[i], imageMovingSpeed);
 
-            yield return waitForGenerate;
+            yield return new WaitForSeconds(generateTermTime); ;
+        }
+    }
+
+    private void ResetPreviousResult()
+    {
+        if (objects != null)
+        {
+            foreach (var obj in objects)
+            {
+                Destroy(obj);
+            }
+            objects.Clear();
         }
     }
 }
