@@ -823,13 +823,10 @@ MonoBehaviour:
   - {fileID: 3833049874695669369}
   - {fileID: 3833049873256778520}
   - {fileID: 3833049873565987777}
-  imagePrefab: {fileID: 4337985154852424275, guid: bfb3c2b3e11a74f4ab0b2d9c66af5a10, type: 3}
-  imageLoader: {fileID: 0}
-  totalImageCount: 10
-  imageQuadSpeed: 1
+  imagePrefab: {fileID: 4258560965352757884, guid: bfb3c2b3e11a74f4ab0b2d9c66af5a10, type: 3}
+  imageLoader: {fileID: 3833049872918139802}
+  imageMovingSpeed: 2
   generateTermTime: 1
-  Textures: []
-  Objects: []
 --- !u!1 &3833049874571663224
 GameObject:
   m_ObjectHideFlags: 0

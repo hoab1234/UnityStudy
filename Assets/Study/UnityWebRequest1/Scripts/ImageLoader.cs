@@ -4,37 +4,34 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
-using System.IO;
-using System;
 
 public class ImageLoader : MonoBehaviour
 {
+    // 불필요한 함수, 변수, 지역변수, 매개변수 삭제하면서 코드량 줄이고 직관적으로 시도해볼 것
+    // 네이밍이 목적에 맞고 명확하게 변경할 것
+    // 해당 클래스가 가진 목적에 집중하고, 그 목적에 필요한 데이터를 밖에서 의존성 가지지 말고 가지고 있도록 할 것
+
     [SerializeField] private TMP_InputField searchInputField;
     [SerializeField] private int maxImageCount = 10;
     [SerializeField] private ImageGenerator imageGenerator;
+    private Texture[] textures;
 
-    // 생성/다운로드 이미지 개수 맞춰야함
-
-    private string baseUrl = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=";
+    //변하면 안되는 값이기 때문에, 상수로 변경 및 네이밍도 더 명확하게
+    private string BASE_URL = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=";
 
     private void Awake()
     {
-        searchInputField.onSubmit.AddListener(value =>
+        // Inputfield의 onSubmit 변수도 value보다 더 명확하게 -> keyword 처럼
+        searchInputField.onSubmit.AddListener(keyword =>
         {
             ResetPreviousResult();
-            RequestImage(baseUrl + value);
+            StartCoroutine(GetRequest(BASE_URL + keyword));
         });
     }
 
-    private void RequestImage(string keyword)
+    IEnumerator GetRequest(string urlWithKeyword)
     {
-        StartCoroutine(GetRequest(keyword));
-    }
-
-    IEnumerator GetRequest(string url)
-    {
-
-        UnityWebRequest request = UnityWebRequest.Get(url);
+        UnityWebRequest request = UnityWebRequest.Get(urlWithKeyword);
 
         yield return request.SendWebRequest();
 
@@ -42,39 +39,39 @@ public class ImageLoader : MonoBehaviour
         else
         {
             Debug.Log(request.downloadHandler.text);
-            List<string> textureUrls = ExtractImageUrl(request.downloadHandler.text);
+            List<string> textureUrls = ExtractImageUrlList(request.downloadHandler.text);
             StartCoroutine(DownloadImage(textureUrls));
         }
     }
 
-    private List<string> ExtractImageUrl(string result)
+    /* 이해를 돕기 위해 변수명으로 잡아둔 것은 괜찮았다고 개인적으로 생각하지만
+    정말 해당 방법이 괜찮은지, 더 직관적으로 바뀔 순 없는지 고민해봐야할 듯
+    목적에 맞지 않았고 오히려 더 이해하기 어려워 졌었었음*/
+    private List<string> ExtractImageUrlList(string result)
     {
         List<string> textureUrls = new List<string>();
 
         string excludeKeyword = "\"originalUrl\":\"";
-        int excludeIndex = excludeKeyword.Length;
 
         int imageCount = maxImageCount;
 
         while (imageCount != 0)
         {
-            string data = result.Substring(result.IndexOf(excludeKeyword) + excludeIndex);
-
+            int keywordStartIndex = result.IndexOf(excludeKeyword) + excludeKeyword.Length;
+            string data = result.Substring(keywordStartIndex);
             string url = data.Substring(0, data.IndexOf("\""));
 
             textureUrls.Add(UnityWebRequest.UnEscapeURL(url));
             Debug.Log(UnityWebRequest.UnEscapeURL(url));
-
             result = data.Substring(data.IndexOf("\"") + 1);
             imageCount--;
         }
-
         return textureUrls;
     }
 
     IEnumerator DownloadImage(List<string> textureUrls)
     {
-        Texture[] textures = new Texture[textureUrls.Count];
+        textures = new Texture[textureUrls.Count];
 
         for (int i = 0; i < textureUrls.Count; i++)
         {
@@ -88,31 +85,24 @@ public class ImageLoader : MonoBehaviour
             }
             else
             {
-                Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
-                textures[i] = texture;
+                textures[i] = DownloadHandlerTexture.GetContent(imageRequest);
             }
         }
 
         imageGenerator.Init(textures);
     }
 
+    /*Destroy 하면 데이터 보관이 끝나는 것이 아님*/
+    
     private void ResetPreviousResult()
     {
-        if (imageGenerator != null)
+        if (textures != null)
         {
-
-            if (imageGenerator.Objects != null)
+            foreach (var texture in textures)
             {
-                foreach (var obj in imageGenerator.Objects)
-                {
-                    Destroy(obj);
-                }
+                Destroy(texture);
             }
-
-            if (imageGenerator.Textures != null)
-            {
-                imageGenerator.Textures = null;
-            }
+            textures = null;
         }
     }
 }
