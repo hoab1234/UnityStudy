@@ -18,7 +18,7 @@ public class ScreenEffect : MonoBehaviour, IHealthObserver
 
     public void OnHealthChanged(float currentHealth)
     {
-        Debug.Log($"ScreenEffect OnHealthChanged currentHealth : {currentHealth}");
+        Debug.Log($" ScreenEffect OnHealthChanged currentHealth : {currentHealth}");
 
         if (currentHealth <= playerMaxHP * 0.3f)
         {
